@@ -19,10 +19,10 @@ def check_winner(board):
 	columns = [[row[i] for row in board] for i in range(len(board))]
 
 	for row in board: winner = row[0] if   (has_identical_elements(row)
-									        and row[0] != " ") else winner
+									   and row[0] != " ") else winner
 
 	for col in columns: winner = col[0] if (has_identical_elements(col)
-										    and col[0] != " ") else winner
+							             and col[0] != " ") else winner
 
 	if board[0][0] == board[1][1] == board[2][2] and board[1][1] != " ": winner = board[1][1]
 	if board[0][2] == board[1][1] == board[2][0] and board[1][1] != " ": winner = board[1][1]
