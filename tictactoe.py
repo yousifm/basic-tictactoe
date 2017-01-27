@@ -11,12 +11,18 @@ def display_board(board):
 		print number + 1, "| %s | %s | %s |" % tuple(row)
 		print separator
 
+def has_identical_elements(list):
+	return len(set(list)) == 1
+
 def check_winner(board):
 	winner = None
 	columns = [[row[i] for row in board] for i in range(len(board))]
 
-	for row in board: winner = row[0] if row == row[0]*len(row) and row[0] != " " else None
-	for col in columns: winner = col[0] if col == col[0]*len(col) and col[0] != " " else None
+	for row in board: winner = row[0] if   (has_identical_elements(row)
+									        and row[0] != " ") else winner
+
+	for col in columns: winner = col[0] if (has_identical_elements(col)
+										    and col[0] != " ") else winner
 
 	if board[0][0] == board[1][1] == board[2][2] and board[1][1] != " ": winner = board[1][1]
 	if board[0][2] == board[1][1] == board[2][0] and board[1][1] != " ": winner = board[1][1]
