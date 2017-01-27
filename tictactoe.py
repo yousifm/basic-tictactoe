@@ -92,16 +92,22 @@ def minimax(current, player, computer, board):
 		if check_winner(b) == player: scores[move] = -1
 		elif check_winner(b) == computer: scores[move] = 1
 		elif not len(possible_moves(b)): scores[move] = 0
+
 		else:
 			next_scores = minimax(next_token, player, computer,b)
 			scores[move] = objective(next_scores.values())
 
 	return scores
 
+def allmax(iterable, key = lambda x: x):
+	maximum = max(map(key, iterable))
+	return [element for element in iterable if key(element) == maximum]
+
 def computer_move(player, computer, board):
 	move_scores = minimax(computer, player, computer, board)
-	best_move = max(move_scores, key = move_scores.get)
-	make_move(best_move, computer, board)
+	best_moves = allmax(move_scores, key = move_scores.get)
+	random_best_move = random.choice(best_moves)
+	make_move(random_best_move, computer, board)
 
 def play_game(board = [[' ']*3 for i in range(3)]):
 	tokens = ('X', 'O')
