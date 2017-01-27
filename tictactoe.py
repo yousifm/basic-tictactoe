@@ -1,8 +1,7 @@
 import re
 import random
 from copy import deepcopy
-import sys
-sys.setrecursionlimit(10000)
+
 def display_board(board):
 	separator = "-"*15
 	print "  | a | b | c |"
