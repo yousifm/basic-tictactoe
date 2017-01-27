@@ -75,39 +75,38 @@ def get_opponent(token, player, computer):
 	if token == player: return computer
 	elif token == computer: return player
 
-def minimax(current, player, computer, board):
-	next_token = get_opponent(current, player, computer)
-
-	if next_token == computer:
+def minimax(move, current, player, computer, board):
+	if current == computer:
+		opponent_objective = min
 		objective = max
 	
-	elif next_token == player:
+	elif current == player:
+		opponent_objective = max
 		objective = min
 
-	scores = {}
-	for move in possible_moves(board):
-		b = deepcopy(board)
-		make_move(move, current, b)
+	b = deepcopy(board)
+	make_move(move, current, b)
 
-		if check_winner(b) == player: scores[move] = -1
-		elif check_winner(b) == computer: scores[move] = 1
-		elif not len(possible_moves(b)): scores[move] = 0
+	if check_winner(b) == player: return -1
+	elif check_winner(b) == computer: return 1
+	elif not len(possible_moves(b)): return 0
 
-		else:
-			next_scores = minimax(next_token, player, computer,b)
-			scores[move] = objective(next_scores.values())
+	opponent = get_opponent(current, player, computer)
 
-	return scores
+	move_score= opponent_objective(minimax(move, opponent, player, computer, b)
+		for move in possible_moves(b))
+
+	return move_score
 
 def allmax(iterable, key = lambda x: x):
 	maximum = max(map(key, iterable))
 	return [element for element in iterable if key(element) == maximum]
 
 def computer_move(player, computer, board):
-	move_scores = minimax(computer, player, computer, board)
-	best_moves = allmax(move_scores, key = move_scores.get)
-	random_best_move = random.choice(best_moves)
-	make_move(random_best_move, computer, board)
+	scores = {}
+	for move in possible_moves(board):
+		scores[move] = minimax(move, computer, player, computer, board)
+	make_move(random.choice(allmax(scores, key = scores.get)), computer, board)
 
 def play_game(board = [[' ']*3 for i in range(3)]):
 	tokens = ('X', 'O')
