@@ -1,8 +1,8 @@
 import re
 import random
-
-LETTERS = ['a', 'b', 'c']
-
+from copy import deepcopy
+import sys
+sys.setrecursionlimit(10000)
 def display_board(board):
 	separator = "-"*15
 	print "  | a | b | c |"
@@ -24,8 +24,10 @@ def check_winner(board):
 	for col in columns: winner = col[0] if (has_identical_elements(col)
 							             and col[0] != " ") else winner
 
-	if board[0][0] == board[1][1] == board[2][2] and board[1][1] != " ": winner = board[1][1]
-	if board[0][2] == board[1][1] == board[2][0] and board[1][1] != " ": winner = board[1][1]
+	if board[0][0] == board[1][1] == board[2][2] and board[1][1] != " ":
+		winner = board[1][1]
+	if board[0][2] == board[1][1] == board[2][0] and board[1][1] != " ":
+		winner = board[1][1]
 
 	return winner
 
@@ -58,7 +60,7 @@ def indices(move):
 	column, row = move
 	return (int(row) - 1, "abc".index(column))
 
-def move(mv, token, board):
+def make_move(mv, token, board):
 	row, column = indices(mv)
 	board[row][column] = token
 
@@ -68,12 +70,39 @@ def player_move(token, board):
 	while not is_valid(p_move, board):
 		p_move = raw_input("Enter column letter, row number (ex: a1)>").strip()
 	
-	move(p_move, token, board)
+	make_move(p_move, token, board)
 
-def computer_move(token, board):
-	c_move = random.choice(possible_moves(board))
-	print c_move
-	move(c_move, token, board)
+def get_opponent(token, player, computer):
+	if token == player: return computer
+	elif token == computer: return player
+
+def minimax(current, player, computer, board):
+	next_token = get_opponent(current, player, computer)
+
+	if next_token == computer:
+		objective = max
+	
+	elif next_token == player:
+		objective = min
+
+	scores = {}
+	for move in possible_moves(board):
+		b = deepcopy(board)
+		make_move(move, current, b)
+
+		if check_winner(b) == player: scores[move] = -1
+		elif check_winner(b) == computer: scores[move] = 1
+		elif not len(possible_moves(b)): scores[move] = 0
+		else:
+			next_scores = minimax(next_token, player, computer,b)
+			scores[move] = objective(next_scores.values())
+
+	return scores
+
+def computer_move(player, computer, board):
+	move_scores = minimax(computer, player, computer, board)
+	best_move = max(move_scores, key = move_scores.get)
+	make_move(best_move, computer, board)
 
 def play_game(board = [[' ']*3 for i in range(3)]):
 	tokens = ('X', 'O')
@@ -88,10 +117,11 @@ def play_game(board = [[' ']*3 for i in range(3)]):
 			player_move(player, board)
 
 		elif current_token is computer:
-			computer_move(computer, board)
-
+			computer_move(player, computer, board)
+			
 		winner = check_winner(board)
 		if winner:
+			display_board(board)
 			print winner, "wins!"
 			return
 
