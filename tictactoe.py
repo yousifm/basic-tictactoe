@@ -75,28 +75,27 @@ def get_opponent(token, player, computer):
 	if token == player: return computer
 	elif token == computer: return player
 
-def minimax(move, current, player, computer, board):
-	if current == computer:
-		opponent_objective = min
-		objective = max
-	
-	elif current == player:
-		opponent_objective = max
-		objective = min
+def minimax(move, current, player, computer, board, a = float("-inf"), b = float("inf")):
+	bn = deepcopy(board)
+	make_move(move, current, bn)
 
-	b = deepcopy(board)
-	make_move(move, current, b)
-
-	if check_winner(b) == player: return -1
-	elif check_winner(b) == computer: return 1
-	elif not len(possible_moves(b)): return 0
+	if check_winner(bn) == player: return -1
+	elif check_winner(bn) == computer: return 1
+	elif not len(possible_moves(bn)): return 0
 
 	opponent = get_opponent(current, player, computer)
 
-	move_score= opponent_objective(minimax(move, opponent, player, computer, b)
-		for move in possible_moves(b))
+	if opponent == player:
+		for move in possible_moves(bn):
+			b = min(minimax(move, opponent, player, computer, bn, a, b), b)
+			if b <= a: break
+		return b
 
-	return move_score
+	elif opponent == computer:
+		for move in possible_moves(bn):
+			a = max(minimax(move, opponent, player, computer, bn, a, b), a)
+			if b <= a: break
+		return a
 
 def allmax(iterable, key = lambda x: x):
 	maximum = max(map(key, iterable))
@@ -125,7 +124,6 @@ def play_game(board = [[' ']*3 for i in range(3)]):
 			
 		winner = check_winner(board)
 		if winner:
-			display_board(board)
 			print winner, "wins!"
 			return
 
