@@ -116,12 +116,13 @@ def play_game(board = [[' ']*3 for i in range(3)]):
 		current_token = tokens[i%2]
 
 		if current_token is player:
-			display_board(board)
 			player_move(player, board)
 
 		elif current_token is computer:
 			computer_move(player, computer, board)
-			
+		
+		display_board(board)
+
 		winner = check_winner(board)
 		if winner:
 			print winner, "wins!"
