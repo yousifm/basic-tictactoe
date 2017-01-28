@@ -110,9 +110,9 @@ def computer_move(player, computer, board):
 	scores = {}
 	for move in possible_moves(board):
 		scores[move] = minimax(move, computer, player, computer, board)
-	make_move(random.choice(allmax(scores, key = scores.get)), computer, board)
+	return random.choice(allmax(scores, key = scores.get))
 
-def play_game(board = [[' ']*3 for i in range(3)]):
+def play_game(board = [[' ']*3 for i in range(3)], strategy = computer_move):
 	tokens = ('X', 'O')
 	player, computer = get_player_computer_tokens(tokens)
 
@@ -124,7 +124,7 @@ def play_game(board = [[' ']*3 for i in range(3)]):
 			player_move(player, board)
 
 		elif current_token is computer:
-			computer_move(player, computer, board)
+			make_move(strategy(player, computer, board), computer, board)
 		
 		display_board(board)
 
@@ -138,5 +138,12 @@ def play_game(board = [[' ']*3 for i in range(3)]):
 
 
 if __name__ == '__main__':
-	Difficulty = get_input("Choose difficulty")
-	play_game()
+	difficulty = get_input("Choose difficulty [easy, impossible]>",
+						   "Enter easy or impossible>",
+						   lambda x : x.lower() in ["easy", "impossible"])
+	if difficulty.lower() == "easy":
+		computer_strategy = lambda _, __, board: random.choice(possible_moves(board))
+	elif difficulty.lower() == "impossible":
+		computer_strategy = computer_move
+
+	play_game(strategy = computer_strategy)
