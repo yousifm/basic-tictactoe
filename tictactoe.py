@@ -120,13 +120,13 @@ def play_game(board = [[' ']*3 for i in range(3)], strategy = computer_move):
 	while i < 9:
 		current_token = tokens[i%2]
 
+		display_board(board)
+		
 		if current_token is player:
 			player_move(player, board)
 
 		elif current_token is computer:
 			make_move(strategy(player, computer, board), computer, board)
-		
-		display_board(board)
 
 		winner = check_winner(board)
 		if winner:
@@ -138,11 +138,12 @@ def play_game(board = [[' ']*3 for i in range(3)], strategy = computer_move):
 
 
 if __name__ == '__main__':
-	difficulty = get_input("Choose difficulty [easy, impossible]>",
-						   "Enter easy or impossible>",
+	difficulty = get_input("Choose difficulty [easy, impossible]> ",
+						   "Enter easy or impossible> ",
 						   lambda x : x.lower() in ["easy", "impossible"])
 	if difficulty.lower() == "easy":
 		computer_strategy = lambda _, __, board: random.choice(possible_moves(board))
+
 	elif difficulty.lower() == "impossible":
 		computer_strategy = computer_move
 
