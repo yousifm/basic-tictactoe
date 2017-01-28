@@ -30,6 +30,13 @@ def check_winner(board):
 
 	return winner
 
+def get_input(message, fail_message, validation):
+	user_input = raw_input(message)
+	if not validation(user_input):
+		print fail_message
+		return get_input(message, fail_message, validation)
+	return user_input
+	
 def get_player_computer_tokens(tokens):
 	player_token = raw_input("Choose your token [%s, %s]>" %tokens)
 	while player_token not in tokens:
@@ -131,5 +138,7 @@ def play_game(board = [[' ']*3 for i in range(3)]):
 		i += 1
 	print "Draw"
 
+
 if __name__ == '__main__':
+	Difficulty = get_input("Choose difficulty")
 	play_game()
