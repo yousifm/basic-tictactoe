@@ -70,10 +70,9 @@ def make_move(mv, token, board):
 	board[row][column] = token
 
 def player_move(token, board):
-	p_move = raw_input("Your turn> ").strip()
-	
-	while not is_valid(p_move, board):
-		p_move = raw_input("Enter column letter, row number (ex: a1)>").strip()
+	p_move = get_input("Your turn>",
+						"Enter column letter, row number (ex: a1).",
+						lambda x: is_valid(x, board))
 	
 	make_move(p_move, token, board)
 
