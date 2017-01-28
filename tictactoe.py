@@ -38,10 +38,9 @@ def get_input(message, fail_message, validation):
 	return user_input
 	
 def get_player_computer_tokens(tokens):
-	player_token = raw_input("Choose your token [%s, %s]>" %tokens)
-	while player_token not in tokens:
-		print "Please enter %s or %s" %tokens
-		player_token = raw_input("Choose your token [%s, %s]>" %tokens)
+	player_token = get_input("Choose you token [%s, %s]>"%tokens,
+					"Please enter %s or %s" %tokens,
+					lambda x: x in tokens)
 
 	if player_token == tokens[0]:
 		computer_token = tokens[1]
