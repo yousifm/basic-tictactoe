@@ -136,13 +136,57 @@ def play_game(board = [[' ']*3 for i in range(3)], strategy = computer_move):
 		i += 1
 	print "Draw"
 
+def almost_win(board, token):
+	diagonal_one = [board[i][i] for i in range(3)]
+	diagonal_two = [board[i][2-i] for i in range(3)]
+	columns = [[row[i] for row in board] for i in range(3)]
+
+	for row_number, row in enumerate(board):
+		if row.count(token) == 2 and row.count(" ") == 1:
+			empty_slot = row.index(" ")
+			return row_number, empty_slot
+
+	for col_num, col in enumerate(columns):
+		if col.count(token) == 2 and col.count(" ") == 1:
+			empty_slot = col.index(" ")
+			return empty_slot, col_num
+
+	if diagonal_one.count(token) == 2 and diagonal_one.count(" ") == 1:
+		empty_slot = diagonal_one.index(" ")
+		return empty_slot, empty_slot
+
+	elif diagonal_two.count(token) == 2 and diagonal_two.count(" ") == 1:
+		empty_slot = diagonal_two.index(" ")
+		return empty_slot, 2-empty_slot
+	else:
+		return None
+
+def normal_difficulty(player, computer, board):
+	win_play = almost_win(board, computer)
+	block_play = almost_win(board, player)
+	if win_play:
+		return indices_to_letters(win_play)
+	elif block_play:
+		return indices_to_letters(block_play)
+	else:
+		return random.choice(possible_moves(board))
+
+def get_empty_slot(lst):
+	return lst.index(" ")
+
+def indices_to_letters(indices):
+	row, column = indices
+	return ("abc"[column], row + 1)
 
 if __name__ == '__main__':
-	difficulty = get_input("Choose difficulty [easy, impossible]> ",
-						   "Enter easy or impossible> ",
-						   lambda x : x.lower() in ["easy", "impossible"])
+	difficulty = get_input("Choose difficulty [easy, normal, impossible]> ",
+						   "Enter easy ,normal or impossible> ",
+						   lambda x : x.lower() in ["easy", "normal", "impossible"])
 	if difficulty.lower() == "easy":
 		computer_strategy = lambda _, __, board: random.choice(possible_moves(board))
+
+	elif difficulty.lower() == "normal":
+		computer_strategy = normal_difficulty
 
 	elif difficulty.lower() == "impossible":
 		computer_strategy = computer_move
