@@ -112,29 +112,6 @@ def computer_move(player, computer, board):
 		scores[move] = minimax(move, computer, player, computer, board)
 	return random.choice(allmax(scores, key = scores.get))
 
-def play_game(board = [[' ']*3 for i in range(3)], strategy = computer_move):
-	tokens = ('X', 'O')
-	player, computer = get_player_computer_tokens(tokens)
-
-	i = 0
-	while i < 9:
-		current_token = tokens[i%2]
-
-		display_board(board)
-		
-		if current_token is player:
-			player_move(player, board)
-
-		elif current_token is computer:
-			make_move(strategy(player, computer, board), computer, board)
-
-		winner = check_winner(board)
-		if winner:
-			print winner, "wins!"
-			return
-
-		i += 1
-	print "Draw"
 
 def almost_win(board, token):
 	diagonal_one = [board[i][i] for i in range(3)]
@@ -177,6 +154,31 @@ def get_empty_slot(lst):
 def indices_to_letters(indices):
 	row, column = indices
 	return ("abc"[column], row + 1)
+
+def play_game(board = [[' ']*3 for i in range(3)], strategy = computer_move):
+	tokens = ('X', 'O')
+	player, computer = get_player_computer_tokens(tokens)
+
+	i = 0
+	while i < 9:
+		current_token = tokens[i%2]
+
+		display_board(board)
+		
+		if current_token is player:
+			player_move(player, board)
+
+		elif current_token is computer:
+			make_move(strategy(player, computer, board), computer, board)
+
+		winner = check_winner(board)
+		if winner:
+			display_board(board)
+			print winner, "wins!"
+			return
+
+		i += 1
+	print "Draw"
 
 if __name__ == '__main__':
 	difficulty = get_input("Choose difficulty [easy, normal, impossible]> ",
